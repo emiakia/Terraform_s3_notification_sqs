@@ -1,9 +1,9 @@
 provider "aws" {
-  region = "eu-central-1"  # Change to your preferred region
+  region = "eu-central-1" # Change to your preferred region
 }
 
 module "s3_bucket" {
-  source      = "./modules/aws_s3_bucket"
+  source          = "./modules/aws_s3_bucket"
   s3b_bucket_name = var.s3b_bucket_name
 }
 
@@ -16,7 +16,7 @@ module "s3_bucket" {
 module "s3_bucket_versioning" {
   source      = "./modules/aws_s3_bucket_versioning"
   s3bv_bucket = module.s3_bucket.bucket_id
-  s3bv_status = "Enabled"  # You can change this value to "Disabled" if desired
+  s3bv_status = "Enabled" # You can change this value to "Disabled" if desired
 }
 
 
@@ -28,10 +28,10 @@ module "s3_bucket_versioning" {
 # }
 
 module "s3_bucket_encryption" {
-  source                 = "./modules/aws_s3_bucket_encryption"
-  s3bse_bucket           = module.s3_bucket.bucket_id
-  s3bse_sse_algorithm    = var.s3bse_sse_algorithm  # Optional, uses default value if not set
-  s3bse_bucket_key_enabled = var.s3bse_bucket_key_enabled  # Optional, uses default value if not set
+  source                   = "./modules/aws_s3_bucket_encryption"
+  s3bse_bucket             = module.s3_bucket.bucket_id
+  s3bse_sse_algorithm      = var.s3bse_sse_algorithm      # Optional, uses default value if not set
+  s3bse_bucket_key_enabled = var.s3bse_bucket_key_enabled # Optional, uses default value if not set
 }
 
 # resource "aws_s3_bucket_server_side_encryption_configuration" "example" {
@@ -45,8 +45,8 @@ module "s3_bucket_encryption" {
 #   }
 # }
 module "s3_bucket_public_access_block" {
-  source                 = "./modules/aws_s3_bucket_public_access_block"
-  s3bpab_bucket          = module.s3_bucket.bucket_id
+  source                     = "./modules/aws_s3_bucket_public_access_block"
+  s3bpab_bucket              = module.s3_bucket.bucket_id
   s3bpab_block_public_acls   = var.s3bpab_block_public_acls   # Optional, uses default value if not set
   s3bpab_block_public_policy = var.s3bpab_block_public_policy # Optional, uses default value if not set
 }
@@ -65,8 +65,8 @@ module "s3_bucket_public_access_block" {
 
 # Create an SQS queue for notifications
 module "sqs_queue" {
-  source     = "./modules/aws_sqs_queue"
-  sqsq_name  = var.sqsq_name
+  source    = "./modules/aws_sqs_queue"
+  sqsq_name = var.sqsq_name
 }
 # resource "aws_sqs_queue" "sqs_notification" {
 #   name = "sqs_notification"
@@ -75,9 +75,9 @@ module "sqs_queue" {
 # Add SQS queue policy to allow S3 to send messages
 
 module "sqs_queue_policy" {
-  source        = "./modules/aws_sqs_queue_policy"
+  source          = "./modules/aws_sqs_queue_policy"
   sqsqp_queue_url = module.sqs_queue.sqs_queue_url
-  sqsqp_policy   = <<POLICY
+  sqsqp_policy    = <<POLICY
 {
   "Version": "2012-10-17",
   "Id": "sqs_notificationPolicy",
@@ -131,11 +131,11 @@ POLICY
 
 # Create an S3 bucket notification to trigger both SNS and SQS on object creation events
 module "s3_bucket_notification" {
-  source        = "./modules/aws_s3_bucket_notification"
-  s3bkn_bucket_id  = module.s3_bucket.bucket_id
-  s3bkn_queue_arn  = module.sqs_queue.sqs_queue_arn
-  s3bkn_events     = ["s3:ObjectCreated:*", "s3:ObjectRemoved:*"]
-  s3bkn_topic_arn  = ""  # Optional, if you use SNS topic uncomment and set
+  source          = "./modules/aws_s3_bucket_notification"
+  s3bkn_bucket_id = module.s3_bucket.bucket_id
+  s3bkn_queue_arn = module.sqs_queue.sqs_queue_arn
+  s3bkn_events    = ["s3:ObjectCreated:*", "s3:ObjectRemoved:*"]
+  s3bkn_topic_arn = "" # Optional, if you use SNS topic uncomment and set
   # s3bkn_depends_on = [module.sqs_queue_policy]  # Optional, include other dependencies as needed
 }
 
