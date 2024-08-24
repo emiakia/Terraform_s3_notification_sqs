@@ -83,3 +83,6 @@ This module configures S3 bucket notifications to send events to the SQS queue.
 
    ```bash
    terraform init
+   terraform plan
+   terraform apply -auto-approve
+   
