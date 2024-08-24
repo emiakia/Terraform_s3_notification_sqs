@@ -128,6 +128,7 @@ POLICY
 ###########################################################################################
 
 
+
 # Create an S3 bucket notification to trigger both SNS and SQS on object creation events
 module "s3_bucket_notification" {
   source        = "./modules/aws_s3_bucket_notification"
@@ -157,4 +158,3 @@ module "s3_bucket_notification" {
 #     # aws_sns_topic_policy.sns_notification_policy
 #   ]
 # }
-
