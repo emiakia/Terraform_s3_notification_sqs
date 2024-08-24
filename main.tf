@@ -102,6 +102,14 @@ resource "aws_sns_topic_policy" "sns_notification_policy" {
 POLICY
 }
 
+
+
+# Add an email subscription to the SNS topic
+resource "aws_sns_topic_subscription" "email_subscription" {
+  topic_arn = aws_sns_topic.sns_notification.arn
+  protocol  = "email"
+  endpoint  = "emran.kia@gmail.com"
+}
 ###########################################################################################
 ###########################################################################################
 ###########################################################################################
@@ -136,12 +144,12 @@ resource "aws_s3_bucket_notification" "emrankia_notification" {
 
 #   queue {
 #     queue_arn = aws_sqs_queue.sqs_notification.arn
-#     events    = ["s3:ObjectCreated:*"]
+#     events    = ["s3:ObjectCreated:*", "s3:ObjectRemoved:*]
 #   }
 
   topic {
     topic_arn = aws_sns_topic.sns_notification.arn
-    events    = ["s3:ObjectCreated:*"]
+    events    = ["s3:ObjectCreated:*", "s3:ObjectRemoved:*"]
   }
 
   depends_on = [
@@ -149,3 +157,4 @@ resource "aws_s3_bucket_notification" "emrankia_notification" {
     aws_sns_topic_policy.sns_notification_policy
   ]
 }
+
